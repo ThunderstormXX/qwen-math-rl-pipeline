@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +19,8 @@ class ModelLoader:
         import torch
         from transformers import AutoModelForCausalLM
 
+        attn_implementation = os.getenv("ATTN_IMPLEMENTATION", attn_implementation)
+        attn_implementation = self._attn(attn_implementation)
         kwargs: dict[str, Any] = {
             "local_files_only": True,
             "trust_remote_code": trust_remote_code,
@@ -25,6 +28,7 @@ class ModelLoader:
         }
         if attn_implementation:
             kwargs["attn_implementation"] = attn_implementation
+            print(f"[model] attn_implementation={attn_implementation}", flush=True)
         model = AutoModelForCausalLM.from_pretrained(path, **kwargs)
         if gradient_checkpointing:
             model.gradient_checkpointing_enable()
@@ -38,3 +42,14 @@ class ModelLoader:
         if name == "fp32":
             return torch_module.float32
         raise ValueError(f"Unsupported dtype: {name}")
+
+    def _attn(self, name: str | None) -> str | None:
+        if name != "flash_attention_2":
+            return name
+        try:
+            import flash_attn  # noqa: F401
+
+            return name
+        except ImportError:
+            print("[model] flash-attn missing; falling back to sdpa", flush=True)
+            return "sdpa"

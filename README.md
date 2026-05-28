@@ -241,6 +241,8 @@ directories are ignored. Keep only code, configs, docs, scripts, tests, and
 - Missing HF token: run `hf auth login` on the server.
 - Missing model files: run `bash scripts/models/verify_base_model.sh`.
 - TRL API mismatch: upgrade or pin `trl`; wrappers raise the mismatched call.
+- FlashAttention2 missing: install optional `flash-attn`, or let the loader
+  fallback to `sdpa`; override manually with `ATTN_IMPLEMENTATION=sdpa`.
 - Out of memory: reduce batch size, sequence length, or generations per prompt.
 - Low parse rate: inspect eval samples and SFT prompt formatting.
 - Reward not increasing: verify ground-truth answers and reward component logs.
