@@ -53,9 +53,24 @@ class SFTPipeline(BasePipeline):
             "SFT_BATCH_SIZE": (cfg.training, "per_device_train_batch_size", int),
             "SFT_GRAD_ACCUM": (cfg.training, "gradient_accumulation_steps", int),
         }
+        paths = {
+            "SFT_TRAIN_PATH": (cfg.data, "train_path"),
+            "SFT_VAL_PATH": (cfg.data, "val_path"),
+            "SFT_CHECKPOINT_DIR": (cfg.output, "checkpoint_dir"),
+            "SFT_FINAL_DIR": (cfg.output, "final_dir"),
+            "SFT_LOG_DIR": (cfg.output, "log_dir"),
+            "SFT_EVAL_DIR": (cfg.output, "eval_dir"),
+        }
+        if os.getenv("SFT_RUN_NAME"):
+            cfg.run.name = os.environ["SFT_RUN_NAME"]
+            print(f"[sft] override run.name={cfg.run.name}", flush=True)
         for name, (section, key, cast) in pairs.items():
             if os.getenv(name):
                 section[key] = cast(os.environ[name])
+                print(f"[sft] override {key}={section[key]}", flush=True)
+        for name, (section, key) in paths.items():
+            if os.getenv(name):
+                section[key] = os.environ[name]
                 print(f"[sft] override {key}={section[key]}", flush=True)
         if os.getenv("SFT_PACKING"):
             cfg.data.packing = os.environ["SFT_PACKING"].lower() == "true"

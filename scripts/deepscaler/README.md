@@ -56,6 +56,7 @@ DeepScaleR-style reward check:
 ```bash
 bash scripts/deepscaler/datasets/rescore_teacher_sft_demo.sh
 bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
+bash scripts/deepscaler/datasets/filter_correct_teacher_sft_demo.sh
 ```
 
 Use `deepscaler_mean_reward` as the comparable binary reward: `1.0` for a
@@ -65,6 +66,21 @@ correct final boxed answer and `0.0` for incorrect or malformed answers.
 NVIDIA's public DeepScaleR reproduction reports about `0.65` average training
 reward around 400 GRPO steps; use that as a rough reference, not an exact target
 for a 100-sample teacher-generation slice.
+
+The correct-only filter writes:
+
+```text
+data/processed/deepscaler/teacher_sft/demo_correct/train.jsonl
+data/processed/deepscaler/teacher_sft/demo_correct/val.jsonl
+data/processed/deepscaler/teacher_sft/demo_correct/summary.json
+```
+
+Train only on those correct teacher samples:
+
+```bash
+GPU_ID=2 SFT_MAX_SEQ_LEN=1024 SFT_BATCH_SIZE=1 \
+bash scripts/deepscaler/sft-distill/demo_correct/run.sh
+```
 
 Full reference-style eval is expensive:
 
