@@ -156,6 +156,10 @@ Compare base and SFT on the same prompt:
 GPU_ID=2 bash scripts/eval/compare_prompt.sh
 ```
 
+Each comparison is saved under `outputs/debug/prompt_compare/<timestamp>/` as
+`base.json`, `sft.json`, and `comparison.md`. Latest copies are also written to
+`outputs/debug/base_prompt.json` and `outputs/debug/sft_prompt.json`.
+
 Override the prompt:
 
 ```bash
