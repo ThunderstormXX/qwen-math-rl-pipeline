@@ -70,6 +70,13 @@ bash scripts/models/download_base_model.sh
 bash scripts/models/verify_base_model.sh
 ```
 
+The scripts use the current Hugging Face CLI, `hf download`. If authentication
+is required, run:
+
+```bash
+hf auth login
+```
+
 3. Download datasets:
 
 ```bash
@@ -184,7 +191,7 @@ directories are ignored. Keep only code, configs, docs, scripts, tests, and
   `rm -rf .venv && PYTHON_BIN=python3.11 bash scripts/setup/create_env.sh`.
 - PyTorch says driver is too old or installs `+cu130`: run
   `TORCH_VERSION=2.8.0 PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu128 bash scripts/setup/install_deps.sh`.
-- Missing HF token: run `huggingface-cli login` on the server.
+- Missing HF token: run `hf auth login` on the server.
 - Missing model files: run `bash scripts/models/verify_base_model.sh`.
 - TRL API mismatch: upgrade or pin `trl`; wrappers raise the mismatched call.
 - Out of memory: reduce batch size, sequence length, or generations per prompt.

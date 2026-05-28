@@ -10,8 +10,21 @@ fi
 TARGET="data/raw/sft/UltraData-SFT-2605"
 mkdir -p "${TARGET}"
 echo "[data] Downloading openbmb/UltraData-SFT-2605 to ${TARGET}"
-huggingface-cli download openbmb/UltraData-SFT-2605 \
-  --repo-type dataset \
-  --local-dir "${TARGET}" \
-  --local-dir-use-symlinks False
+
+if command -v hf >/dev/null 2>&1; then
+  hf download openbmb/UltraData-SFT-2605 \
+    --repo-type dataset \
+    --local-dir "${TARGET}"
+elif command -v huggingface-cli >/dev/null 2>&1; then
+  huggingface-cli download openbmb/UltraData-SFT-2605 \
+    --repo-type dataset \
+    --local-dir "${TARGET}" \
+    --local-dir-use-symlinks False
+else
+  echo "[data] Missing Hugging Face CLI. Install huggingface_hub or run: hf auth login"
+  exit 1
+fi
+
+find "${TARGET}" -type f ! -path '*/.cache/*' | grep -q . \
+  || { echo "[data] Download failed: no dataset files found"; exit 1; }
 echo "[data] Download complete"
