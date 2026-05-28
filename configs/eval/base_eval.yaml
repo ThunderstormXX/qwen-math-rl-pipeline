@@ -1,0 +1,16 @@
+run:
+  name: base_eval
+model:
+  path: models/base_models/Qwen3.5-2B-Base
+  dtype: bf16
+data:
+  eval_path: data/eval/dapo_val/eval.jsonl
+  max_samples: 100
+generation:
+  max_new_tokens: 1024
+  temperature: 0.0
+  top_p: 1.0
+output:
+  report_dir: outputs/reports/base_eval
+  generations_path: outputs/reports/base_eval/generations.jsonl
+  metrics_path: outputs/reports/base_eval/metrics.json

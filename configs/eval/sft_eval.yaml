@@ -1,0 +1,20 @@
+run:
+  name: sft_eval
+model:
+  path: models/sft_models/final/demo_sft_final
+  dtype: bf16
+data:
+  eval_path: data/eval/dapo_val/eval.jsonl
+  max_samples: 100
+generation:
+  max_new_tokens: 1024
+  temperature: 0.0
+  top_p: 1.0
+output:
+  report_dir: outputs/reports/sft_eval
+  generations_path: outputs/reports/sft_eval/generations.jsonl
+  metrics_path: outputs/reports/sft_eval/metrics.json
+gates:
+  parse_rate: 0.9
+  invalid_answer_rate: 0.1
+  max_avg_response_length: 4096

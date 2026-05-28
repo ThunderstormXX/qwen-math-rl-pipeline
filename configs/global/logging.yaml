@@ -1,0 +1,5 @@
+logging:
+  level: INFO
+  metrics_file: metrics.jsonl
+  summary_file: summary.json
+  samples_file: samples.jsonl

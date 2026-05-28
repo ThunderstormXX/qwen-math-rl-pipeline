@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qwen-sft-rlvr"
+version = "0.1.0"
+description = "SFT and RLVR post-training pipeline for Qwen math experiments"
+requires-python = ">=3.10"
+dependencies = [
+  "torch",
+  "transformers",
+  "datasets",
+  "accelerate",
+  "trl",
+  "peft",
+  "safetensors",
+  "huggingface_hub",
+  "pyyaml",
+  "tqdm",
+  "numpy",
+  "pandas",
+  "pytest",
+]
+
+[project.optional-dependencies]
+server = ["wandb", "deepspeed", "vllm", "ray"]
+flash = ["flash-attn"]
+verl = ["verl"]
+openrlhf = ["openrlhf"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

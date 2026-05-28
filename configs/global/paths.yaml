@@ -1,0 +1,7 @@
+project:
+  name: qwen-sft-rlvr
+  seed: 42
+paths:
+  data_dir: data
+  models_dir: models
+  outputs_dir: outputs

@@ -1,0 +1,35 @@
+run:
+  name: rl_exp_001
+  seed: 42
+backend:
+  name: trl_grpo
+model:
+  path: models/sft_models/final/exp_001_sft_final
+  reference_path: models/sft_models/final/exp_001_sft_final
+  dtype: bf16
+  attn_implementation: flash_attention_2
+data:
+  train_path: data/processed/rl/exp_001/train.jsonl
+  val_path: data/processed/rl/exp_001/val.jsonl
+  max_prompts: 5000
+  max_prompt_len: 2048
+  max_new_tokens: 2048
+rl:
+  algorithm: grpo
+  generations_per_prompt: 4
+  learning_rate: 1.0e-6
+  kl_coef: 0.005
+  temperature: 0.8
+  top_p: 0.95
+  epochs: 1
+  batch_prompts_per_step: 32
+reward:
+  correctness_weight: 1.0
+  format_weight: 0.1
+  repetition_penalty: 0.1
+  length_penalty: 0.05
+output:
+  checkpoint_dir: models/rl_models/training_checkpoints/exp_001
+  final_dir: models/rl_models/final/exp_001_rl_final
+  log_dir: models/rl_models/training_checkpoints/exp_001/logs
+  eval_dir: models/rl_models/training_checkpoints/exp_001/evals
