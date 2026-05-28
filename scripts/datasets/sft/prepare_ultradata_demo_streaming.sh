@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+mkdir -p data/processed/sft/demo
+export PYTHONPATH="${PWD}/src:${PYTHONPATH:-}"
+echo "[data] Streaming SFT demo subset from Hugging Face"
+python -m qwen_sft_rlvr.data.prepare_sft \
+  --hf-dataset openbmb/UltraData-SFT-2605 \
+  --hf-config "${SFT_HF_CONFIG:-}" \
+  --split "${SFT_HF_SPLIT:-train}" \
+  --output-dir data/processed/sft/demo \
+  --config scripts/sft-training/demo/config.yaml \
+  --val-ratio 0.05
+echo "[data] Wrote data/processed/sft/demo"

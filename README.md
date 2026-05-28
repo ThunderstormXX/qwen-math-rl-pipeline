@@ -88,6 +88,20 @@ bash scripts/datasets/rl/download_dapo_math.sh
 prints `Access denied. This repository requires approval`, open the dataset page,
 request access, run `hf auth login`, and rerun the SFT download script.
 
+To avoid downloading an entire large dataset, use Hugging Face include/exclude
+patterns after inspecting repo files with `hf repo files`:
+
+```bash
+hf repo files openbmb/UltraData-SFT-2605 --repo-type dataset | head
+SFT_HF_INCLUDE='some-small-file-or-pattern*' bash scripts/datasets/sft/download_ultradata.sh
+```
+
+For demo SFT without downloading the raw 360 GB dataset, stream only the subset:
+
+```bash
+bash scripts/datasets/sft/prepare_ultradata_demo_streaming.sh
+```
+
 4. Prepare demo subsets:
 
 ```bash

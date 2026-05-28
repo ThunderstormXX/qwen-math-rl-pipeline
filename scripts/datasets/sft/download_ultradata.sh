@@ -10,12 +10,22 @@ fi
 TARGET="data/raw/sft/UltraData-SFT-2605"
 mkdir -p "${TARGET}"
 echo "[data] Downloading openbmb/UltraData-SFT-2605 to ${TARGET}"
+if [ -n "${SFT_HF_INCLUDE:-}" ]; then
+  echo "[data] Include pattern: ${SFT_HF_INCLUDE}"
+fi
+if [ -n "${SFT_HF_EXCLUDE:-}" ]; then
+  echo "[data] Exclude pattern: ${SFT_HF_EXCLUDE}"
+fi
 
 if command -v hf >/dev/null 2>&1; then
-  if ! hf download openbmb/UltraData-SFT-2605 \
-    --repo-type dataset \
-    --local-dir "${TARGET}"
-  then
+  ARGS=(download openbmb/UltraData-SFT-2605 --repo-type dataset --local-dir "${TARGET}")
+  if [ -n "${SFT_HF_INCLUDE:-}" ]; then
+    ARGS+=(--include "${SFT_HF_INCLUDE}")
+  fi
+  if [ -n "${SFT_HF_EXCLUDE:-}" ]; then
+    ARGS+=(--exclude "${SFT_HF_EXCLUDE}")
+  fi
+  if ! hf "${ARGS[@]}"; then
     echo "[data] Download failed. This dataset may require Hugging Face approval."
     echo "[data] Open https://huggingface.co/datasets/openbmb/UltraData-SFT-2605"
     echo "[data] Request access, then run: hf auth login"
