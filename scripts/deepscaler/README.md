@@ -15,6 +15,7 @@ bash scripts/deepscaler/datasets/download_benchmarks.sh
 bash scripts/deepscaler/datasets/prepare_benchmarks.sh
 
 GPU_ID=2 bash scripts/deepscaler/datasets/generate_teacher_sft_demo.sh
+bash scripts/deepscaler/datasets/rescore_teacher_sft_demo.sh
 bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
 GPU_ID=2 bash scripts/deepscaler/eval/base/run.sh
 GPU_ID=2 bash scripts/deepscaler/sft-distill/demo/run.sh
@@ -28,6 +29,10 @@ Inspect a specific generated teacher answer:
 TEACHER_INSPECT_INDEX=0 bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
 TEACHER_INSPECT_WHERE=first-wrong bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
 ```
+
+`rescore_teacher_sft_demo.sh` recomputes rewards for existing generations
+without running the teacher model again. It writes `.bak` copies of the previous
+reward and summary files.
 
 Full reference-style eval is expensive:
 
