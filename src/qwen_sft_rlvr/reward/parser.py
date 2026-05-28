@@ -5,9 +5,9 @@ import re
 
 class AnswerParser:
     number_re = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
-    latex_fraction_re = re.compile(r"(-?)\\frac\{([^{}]+)\}\{([^{}]+)\}")
+    latex_fraction_re = re.compile(r"(-?)\\(?:[dt]?frac)\{([^{}]+)\}\{([^{}]+)\}")
     plain_fraction_re = re.compile(r"-?\d+(?:\.\d+)?\s*/\s*-?\d+(?:\.\d+)?")
-    answer_atom_re = r"-?\\frac\{[^{}]+\}\{[^{}]+\}|-?\d+(?:\.\d+)?\s*/\s*-?\d+(?:\.\d+)?|-?\d[\d,]*(?:\.\d+)?"
+    answer_atom_re = r"-?\\(?:[dt]?frac)\{[^{}]+\}\{[^{}]+\}|-?\d+(?:\.\d+)?\s*/\s*-?\d+(?:\.\d+)?|-?\d[\d,]*(?:\.\d+)?"
     answer_phrase_re = re.compile(
         rf"(?:answer|result|value)\s*(?:is|=|:)\s*({answer_atom_re})",
         re.IGNORECASE,

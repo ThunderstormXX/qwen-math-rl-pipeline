@@ -21,6 +21,10 @@ def test_latex_fraction_equivalence():
     assert AnswerParser().equivalent("-2/3", r"-\frac{2}{3}")
 
 
+def test_display_latex_fraction_equivalence():
+    assert AnswerParser().equivalent(r"-\dfrac{2}{3}", r"-\frac{2}{3}")
+
+
 def test_answer_phrase_beats_later_partial_number():
     text = "Simplifying gives -2/3. So the result is -2/3. Rechecking: 1 - 9 = -8"
     assert AnswerParser().extract(text) == "-2/3"
