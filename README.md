@@ -206,6 +206,14 @@ bash scripts/deepscaler/reports/compare.sh
 
 Full details, benchmark table, and caveats are in `docs/deepscaler_distillation.md`.
 
+For the DeepScaleR demo path after models and data are present, this single
+command generates teacher answers, rescoring/inspection artifacts, and starts
+SFT on those generations:
+
+```bash
+GPU_ID=2 bash scripts/deepscaler/run_demo_sft_from_teacher.sh
+```
+
 6. For the real `exp_001` run, prepare larger subsets and run:
 
 ```bash

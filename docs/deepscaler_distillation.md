@@ -110,6 +110,13 @@ GPU_ID=2 TEACHER_MAX_EXAMPLES=100 TEACHER_MAX_NEW_TOKENS=1024 \
 bash scripts/deepscaler/datasets/generate_teacher_sft_demo.sh
 ```
 
+The one-command demo runs teacher generation, reward rescoring, inspection, and
+SFT training:
+
+```bash
+GPU_ID=2 bash scripts/deepscaler/run_demo_sft_from_teacher.sh
+```
+
 Inspect one generated answer and its reward:
 
 ```bash

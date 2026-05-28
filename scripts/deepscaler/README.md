@@ -23,6 +23,23 @@ GPU_ID=2 bash scripts/deepscaler/eval/student/run.sh
 bash scripts/deepscaler/reports/compare.sh
 ```
 
+Or run teacher generation, reward rescoring, sample inspection, and SFT in one
+command:
+
+```bash
+GPU_ID=2 bash scripts/deepscaler/run_demo_sft_from_teacher.sh
+```
+
+Defaults for the combined command:
+
+```bash
+TEACHER_MAX_EXAMPLES=100
+TEACHER_MAX_NEW_TOKENS=2048
+SFT_MAX_SEQ_LEN=2048
+SFT_BATCH_SIZE=1
+SFT_PACKING=false
+```
+
 Inspect a specific generated teacher answer:
 
 ```bash
