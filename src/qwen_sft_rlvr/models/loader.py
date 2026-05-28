@@ -21,18 +21,27 @@ class ModelLoader:
 
         attn_implementation = os.getenv("ATTN_IMPLEMENTATION", attn_implementation)
         attn_implementation = self._attn(attn_implementation)
+        kwargs = self._kwargs(dtype, trust_remote_code, attn_implementation, torch)
+        if (Path(path) / "adapter_config.json").exists():
+            from peft import AutoPeftModelForCausalLM
+
+            model = AutoPeftModelForCausalLM.from_pretrained(path, **kwargs)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(path, **kwargs)
+        if gradient_checkpointing:
+            model.gradient_checkpointing_enable()
+        return model
+
+    def _kwargs(self, dtype: str, trust_remote_code: bool, attn_implementation, torch_module) -> dict:
         kwargs: dict[str, Any] = {
             "local_files_only": True,
             "trust_remote_code": trust_remote_code,
-            "torch_dtype": self._dtype(dtype, torch),
+            "torch_dtype": self._dtype(dtype, torch_module),
         }
         if attn_implementation:
             kwargs["attn_implementation"] = attn_implementation
             print(f"[model] attn_implementation={attn_implementation}", flush=True)
-        model = AutoModelForCausalLM.from_pretrained(path, **kwargs)
-        if gradient_checkpointing:
-            model.gradient_checkpointing_enable()
-        return model
+        return kwargs
 
     def _dtype(self, name: str, torch_module) -> Any:
         if name == "bf16":

@@ -7,6 +7,7 @@ from pathlib import Path
 from qwen_sft_rlvr.core.jsonl import read_jsonl
 from qwen_sft_rlvr.models.checkpoints import CheckpointManager
 from qwen_sft_rlvr.models.loader import ModelLoader
+from qwen_sft_rlvr.models.peft import PeftAdapter
 from qwen_sft_rlvr.models.tokenizer import TokenizerLoader
 from qwen_sft_rlvr.pipeline.base import BasePipeline
 from qwen_sft_rlvr.training.sft_trainer import SFTTrainerRunner
@@ -24,6 +25,7 @@ class SFTPipeline(BasePipeline):
             attn_implementation=cfg.model.get("attn_implementation"),
             gradient_checkpointing=True,
         )
+        model = PeftAdapter().apply_lora(model, cfg)
         self._disable_unsafe_packing(cfg, model)
         tokenizer = TokenizerLoader().load(cfg.model.path)
         manager = CheckpointManager(cfg.output.checkpoint_dir, cfg.output.final_dir)

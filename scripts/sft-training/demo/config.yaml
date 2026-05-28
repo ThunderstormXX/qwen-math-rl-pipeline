@@ -7,6 +7,19 @@ model:
   path: models/base_models/Qwen3.5-2B-Base
   dtype: bf16
   attn_implementation: flash_attention_2
+peft:
+  enabled: true
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
 data:
   train_path: data/processed/sft/demo/train.jsonl
   val_path: data/processed/sft/demo/val.jsonl
