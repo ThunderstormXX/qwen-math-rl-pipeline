@@ -25,11 +25,18 @@ then
 fi
 
 echo "[setup] Installing package and dependencies with ${PYTHON}"
+TORCH_VERSION="${TORCH_VERSION:-2.8.0}"
+PYTORCH_INDEX_URL="${PYTORCH_INDEX_URL:-https://download.pytorch.org/whl/cu128}"
+echo "[setup] Installing PyTorch ${TORCH_VERSION} from ${PYTORCH_INDEX_URL}"
 if command -v uv >/dev/null 2>&1; then
   uv pip install --python "${PYTHON}" --upgrade pip
+  uv pip install --python "${PYTHON}" --force-reinstall \
+    --index-url "${PYTORCH_INDEX_URL}" "torch==${TORCH_VERSION}"
   uv pip install --python "${PYTHON}" -e .
 else
   "${PYTHON}" -m pip install --upgrade pip
+  "${PYTHON}" -m pip install --force-reinstall \
+    --index-url "${PYTORCH_INDEX_URL}" "torch==${TORCH_VERSION}"
   "${PYTHON}" -m pip install -e .
 fi
 echo "[setup] Dependencies installed"

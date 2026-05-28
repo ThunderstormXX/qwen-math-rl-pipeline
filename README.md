@@ -56,6 +56,13 @@ source .venv/bin/activate
 bash scripts/setup/install_deps.sh
 ```
 
+The install script pins PyTorch to the CUDA 12.8 wheel by default:
+
+```bash
+TORCH_VERSION=2.8.0
+PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu128
+```
+
 2. Download and verify the base model:
 
 ```bash
@@ -175,6 +182,8 @@ directories are ignored. Keep only code, configs, docs, scripts, tests, and
 - CUDA not available: run `bash scripts/setup/check_gpu.sh` and check drivers.
 - Broken `.venv` or missing `encodings`: remove it and recreate with
   `rm -rf .venv && PYTHON_BIN=python3.11 bash scripts/setup/create_env.sh`.
+- PyTorch says driver is too old or installs `+cu130`: run
+  `TORCH_VERSION=2.8.0 PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cu128 bash scripts/setup/install_deps.sh`.
 - Missing HF token: run `huggingface-cli login` on the server.
 - Missing model files: run `bash scripts/models/verify_base_model.sh`.
 - TRL API mismatch: upgrade or pin `trl`; wrappers raise the mismatched call.
