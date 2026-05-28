@@ -8,6 +8,10 @@ ARGS=()
 for run in ${RUNS}; do
   ARGS+=(--run "${run}")
 done
+for benchmark in ${BENCHMARKS:-}; do
+  ARGS+=(--benchmark "${benchmark}")
+done
 echo "[deepscaler] Comparing runs: ${RUNS}"
+echo "[deepscaler] Benchmarks: ${BENCHMARKS:-common available}"
 python scripts/deepscaler/python_scripts/compare_benchmarks.py "${ARGS[@]}"
 echo "[deepscaler] Wrote outputs/deepscaler/comparisons"
