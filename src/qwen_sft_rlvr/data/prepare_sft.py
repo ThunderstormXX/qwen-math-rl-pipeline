@@ -23,6 +23,8 @@ class SFTDataPreparer:
             if len(records) >= max_examples:
                 break
         records = limit_records(records, max_examples)
+        if not records:
+            raise ValueError("Prepared 0 SFT records; check dataset config and schema")
         DatasetWriter().split_write(records, output_dir, val_ratio)
         return len(records)
 

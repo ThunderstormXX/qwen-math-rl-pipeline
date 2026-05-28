@@ -102,6 +102,10 @@ For demo SFT without downloading the raw 360 GB dataset, stream only the subset:
 bash scripts/datasets/sft/prepare_ultradata_demo_streaming.sh
 ```
 
+The streaming script defaults to the UltraData config `Math`. Override it with
+`SFT_HF_CONFIG=IF` or another available config only when intentionally changing
+the SFT mixture.
+
 4. Prepare demo subsets:
 
 ```bash

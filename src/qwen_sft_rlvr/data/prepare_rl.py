@@ -28,6 +28,8 @@ class RLDataPreparer:
                 records.append(built)
             if len(records) >= max_examples:
                 break
+        if not records:
+            raise ValueError("Prepared 0 RL records; check dataset schema")
         DatasetWriter().split_write(records, output_dir, val_ratio)
         if eval_output_dir:
             val_size = max(1, int(len(records) * val_ratio)) if records else 0
