@@ -150,6 +150,19 @@ MODEL_PATH=models/sft_models/final/demo_sft_final \
 CUDA_VISIBLE_DEVICES=5 bash scripts/models/generate_once.sh --math --prompt 'Solve 2x+3=9.'
 ```
 
+Compare base and SFT on the same prompt:
+
+```bash
+GPU_ID=2 bash scripts/eval/compare_prompt.sh
+```
+
+Override the prompt:
+
+```bash
+PROMPT='Solve for x: 2x+3=9. Put the final answer in \boxed{}.' \
+GPU_ID=2 bash scripts/eval/compare_prompt.sh
+```
+
 Most run scripts accept `GPU_ID` as a short alias:
 
 ```bash
