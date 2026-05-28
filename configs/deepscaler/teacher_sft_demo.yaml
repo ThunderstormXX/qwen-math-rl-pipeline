@@ -1,0 +1,30 @@
+run:
+  name: deepscaler_teacher_sft_demo
+  seed: 42
+
+teacher:
+  model_path: models/deepscaler/teacher/DeepScaleR-1.5B-Preview
+  dtype: bf16
+  attn_implementation: sdpa
+
+data:
+  dataset_name: agentica-org/DeepScaleR-Preview-Dataset
+  split: train
+  local_dir: data/raw/deepscaler/train/DeepScaleR-Preview-Dataset
+  streaming: true
+  max_examples: 100
+  val_ratio: 0.05
+
+generation:
+  max_new_tokens: 1024
+  temperature: 0.0
+  top_p: 0.95
+
+reward:
+  correctness_weight: 1.0
+  format_weight: 0.1
+
+output:
+  sft_dir: data/processed/deepscaler/teacher_sft/demo
+  rewards_path: outputs/deepscaler/teacher_sft/demo/rewards.jsonl
+  summary_path: outputs/deepscaler/teacher_sft/demo/summary.json

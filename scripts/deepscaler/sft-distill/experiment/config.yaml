@@ -1,0 +1,44 @@
+run:
+  name: deepscaler_sft_distill_exp_001
+  seed: 42
+
+backend:
+  name: trl_sft
+
+model:
+  path: models/deepscaler/base/DeepSeek-R1-Distill-Qwen-1.5B
+  dtype: bf16
+  attn_implementation: sdpa
+
+peft:
+  enabled: true
+  r: 16
+  alpha: 32
+  dropout: 0.05
+
+data:
+  train_path: data/processed/deepscaler/teacher_sft/exp_001/train.jsonl
+  val_path: data/processed/deepscaler/teacher_sft/exp_001/val.jsonl
+  max_examples: 40000
+  max_seq_len: 4096
+  packing: false
+
+training:
+  epochs: 1
+  learning_rate: 1.0e-5
+  warmup_ratio: 0.03
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 16
+  logging_steps: 10
+  save_steps: 500
+  eval_steps: 500
+  save_strategy: "steps"
+  eval_strategy: "no"
+
+output:
+  checkpoint_dir: models/deepscaler/student/training_checkpoints/exp_001
+  final_dir: models/deepscaler/student/final/exp_001_sft_from_teacher
+  log_dir: models/deepscaler/student/training_checkpoints/exp_001/logs
+  eval_dir: models/deepscaler/student/training_checkpoints/exp_001/evals

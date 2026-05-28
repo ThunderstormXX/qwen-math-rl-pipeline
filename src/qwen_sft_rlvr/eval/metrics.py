@@ -19,6 +19,7 @@ class MetricComputer:
         exact = sum(1 for row in rows if self._exact(row))
         repeated = sum(1 for row in rows if self._repeated(row.get("response", "")))
         total_len = sum(int(row.get("response_length", 0)) for row in rows)
+        problems = {(row.get("benchmark"), row.get("problem")) for row in rows}
         return {
             "pass_at_1": correct / n,
             "parse_rate": parseable / n,
@@ -28,6 +29,8 @@ class MetricComputer:
             "invalid_answer_rate": 1.0 - (parseable / n),
             "repetition_collapse_rate": repeated / n,
             "num_samples": n,
+            "num_problems": len(problems),
+            "samples_per_problem": n / len(problems) if problems else 0,
         }
 
     def _exact(self, row: dict) -> bool:

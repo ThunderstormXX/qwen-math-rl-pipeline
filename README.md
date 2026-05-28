@@ -174,6 +174,36 @@ bash scripts/setup/select_gpu.sh
 GPU_ID=2 bash scripts/sft-training/demo/run.sh
 ```
 
+## DeepScaleR Distillation
+
+The repo also includes a separate DeepScaleR teacher-SFT experiment:
+
+```text
+deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+  -> generate SFT data with agentica-org/DeepScaleR-1.5B-Preview
+  -> score teacher answers with local reward code
+  -> SFT-train the base model on teacher generations
+  -> eval before/after on AIME 2024, MATH 500, AMC 2023,
+     Minerva Math, and OlympiadBench
+```
+
+Start here:
+
+```bash
+bash scripts/deepscaler/models/download_base_model.sh
+bash scripts/deepscaler/models/download_teacher_model.sh
+bash scripts/deepscaler/datasets/download_train_dataset.sh
+bash scripts/deepscaler/datasets/download_benchmarks.sh
+bash scripts/deepscaler/datasets/prepare_benchmarks.sh
+GPU_ID=2 bash scripts/deepscaler/datasets/generate_teacher_sft_demo.sh
+GPU_ID=2 bash scripts/deepscaler/eval/base/run.sh
+GPU_ID=2 bash scripts/deepscaler/sft-distill/demo/run.sh
+GPU_ID=2 bash scripts/deepscaler/eval/student/run.sh
+bash scripts/deepscaler/reports/compare.sh
+```
+
+Full details, benchmark table, and caveats are in `docs/deepscaler_distillation.md`.
+
 6. For the real `exp_001` run, prepare larger subsets and run:
 
 ```bash
@@ -230,6 +260,7 @@ bash scripts/reports/compare_checkpoints.sh
 - `src/qwen_sft_rlvr/`: package code.
 - `tests/`: CPU unit tests for parsing, rewards, formatting, paths, configs.
 - `docs/demo_experiment.md`: first server demo run notes and observed improvements.
+- `docs/deepscaler_distillation.md`: DeepScaleR teacher-SFT setup and benchmark targets.
 - `data/`, `models/`, `outputs/`: server artifacts, ignored except `.gitkeep`.
 
 ## Backends

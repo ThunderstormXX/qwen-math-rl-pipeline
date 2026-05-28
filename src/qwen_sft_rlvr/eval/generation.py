@@ -19,15 +19,17 @@ class GenerationRunner:
         model.eval()
         print("[eval] Loading tokenizer", flush=True)
         tokenizer = TokenizerLoader().load(config.model.path)
-        print(f"[eval] Generating {len(records)} samples", flush=True)
+        repeats = int(config.generation.get("samples_per_problem", 1))
+        total = len(records) * repeats
+        print(f"[eval] Generating {total} samples", flush=True)
         rows = []
-        for row in self._progress(records):
-            rows.append(self._generate_one(model, tokenizer, config, row))
+        for row, sample_index in self._progress(records, repeats):
+            rows.append(self._generate_one(model, tokenizer, config, row, sample_index))
         write_jsonl(output_path, rows)
         print(f"[eval] Wrote generations to {output_path}", flush=True)
         return rows
 
-    def _generate_one(self, model: Any, tokenizer: Any, config, row: dict) -> dict:
+    def _generate_one(self, model: Any, tokenizer: Any, config, row: dict, sample_index: int) -> dict:
         import torch
 
         inputs = tokenizer(row["prompt"], return_tensors="pt")
@@ -50,6 +52,7 @@ class GenerationRunner:
         correct = bool(pred and self.parser.equivalent(pred, row["ground_truth"]))
         return {
             "benchmark": row.get("benchmark", "unknown"),
+            "sample_index": sample_index,
             "problem": row["problem"],
             "ground_truth": row["ground_truth"],
             "prompt": row["prompt"],
@@ -70,10 +73,11 @@ class GenerationRunner:
         print("[eval] CUDA unavailable; using current model device", flush=True)
         return model
 
-    def _progress(self, records: list[dict]):
+    def _progress(self, records: list[dict], repeats: int):
+        items = [(row, i) for row in records for i in range(repeats)]
         try:
             from tqdm.auto import tqdm
 
-            return tqdm(records, desc="[eval] samples", unit="sample")
+            return tqdm(items, desc="[eval] samples", unit="sample")
         except ImportError:
-            return records
+            return items

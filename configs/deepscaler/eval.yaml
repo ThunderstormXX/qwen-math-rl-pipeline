@@ -1,0 +1,21 @@
+run:
+  name: deepscaler_benchmark_eval
+
+model:
+  path: models/deepscaler/base/DeepSeek-R1-Distill-Qwen-1.5B
+  dtype: bf16
+
+data:
+  eval_path: data/eval/deepscaler/aime_2024/eval.jsonl
+  max_samples: 10
+
+generation:
+  max_new_tokens: 1024
+  temperature: 0.0
+  top_p: 1.0
+  samples_per_problem: 1
+
+output:
+  report_dir: outputs/deepscaler/eval/base/aime_2024
+  generations_path: outputs/deepscaler/eval/base/aime_2024/generations.jsonl
+  metrics_path: outputs/deepscaler/eval/base/aime_2024/metrics.json
