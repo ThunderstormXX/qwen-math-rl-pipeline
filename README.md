@@ -131,6 +131,24 @@ Eval scripts default to a fast smoke setting, `EVAL_MAX_SAMPLES=10` and
 EVAL_MAX_SAMPLES=50 EVAL_MAX_NEW_TOKENS=1024 bash scripts/eval/base/run.sh
 ```
 
+## Manual Generation
+
+Run one prompt through a local checkpoint:
+
+```bash
+CUDA_VISIBLE_DEVICES=5 bash scripts/models/generate_once.sh \
+  --math \
+  --prompt 'What is 17 * 23? Put the final answer in \boxed{}.' \
+  --max-new-tokens 256
+```
+
+For SFT or RL checkpoints, override `MODEL_PATH`:
+
+```bash
+MODEL_PATH=models/sft_models/final/demo_sft_final \
+CUDA_VISIBLE_DEVICES=5 bash scripts/models/generate_once.sh --math --prompt 'Solve 2x+3=9.'
+```
+
 6. For the real `exp_001` run, prepare larger subsets and run:
 
 ```bash
