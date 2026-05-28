@@ -255,5 +255,6 @@ directories are ignored. Keep only code, configs, docs, scripts, tests, and
   For demo SFT on a busy GPU, use
   `SFT_MAX_SEQ_LEN=512 SFT_BATCH_SIZE=1 SFT_PACKING=false bash scripts/sft-training/demo/run.sh`.
   Demo SFT uses LoRA by default; set `SFT_USE_LORA=false` only for full fine-tuning.
+  Demo SFT disables Trainer eval during training; run `scripts/eval/sft/run.sh` after.
 - Low parse rate: inspect eval samples and SFT prompt formatting.
 - Reward not increasing: verify ground-truth answers and reward component logs.

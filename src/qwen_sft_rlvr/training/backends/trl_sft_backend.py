@@ -43,7 +43,9 @@ class TRLSFTBackend(SFTBackend):
             "logging_steps": cfg.training.logging_steps,
             "save_steps": cfg.training.save_steps,
             "eval_steps": cfg.training.eval_steps,
-            "save_strategy": "steps",
+            "save_strategy": cfg.training.get("save_strategy", "no"),
+            "prediction_loss_only": True,
+            "per_device_eval_batch_size": cfg.training.get("per_device_eval_batch_size", 1),
             "dataset_text_field": "text",
             "packing": cfg.data.packing,
             "max_seq_length": cfg.data.max_seq_len,
@@ -54,10 +56,11 @@ class TRLSFTBackend(SFTBackend):
 
     def _eval_arg(self, cls) -> dict:
         names = set(inspect.signature(cls.__init__).parameters)
+        value = self.config.training.get("eval_strategy", "no")
         if "eval_strategy" in names:
-            return {"eval_strategy": "steps"}
+            return {"eval_strategy": value}
         if "evaluation_strategy" in names:
-            return {"evaluation_strategy": "steps"}
+            return {"evaluation_strategy": value}
         return {}
 
     def _supported(self, cls, params: dict) -> dict:

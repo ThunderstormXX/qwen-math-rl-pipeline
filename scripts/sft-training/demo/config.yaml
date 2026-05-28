@@ -37,6 +37,9 @@ training:
   logging_steps: 10
   save_steps: 100
   eval_steps: 100
+  eval_strategy: "no"
+  save_strategy: "no"
+  per_device_eval_batch_size: 1
 output:
   checkpoint_dir: models/sft_models/training_checkpoints/demo
   final_dir: models/sft_models/final/demo_sft_final
