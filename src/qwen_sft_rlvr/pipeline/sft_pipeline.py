@@ -52,6 +52,8 @@ class SFTPipeline(BasePipeline):
             "SFT_MAX_SEQ_LEN": (cfg.data, "max_seq_len", int),
             "SFT_BATCH_SIZE": (cfg.training, "per_device_train_batch_size", int),
             "SFT_GRAD_ACCUM": (cfg.training, "gradient_accumulation_steps", int),
+            "SFT_EPOCHS": (cfg.training, "epochs", int),
+            "SFT_LEARNING_RATE": (cfg.training, "learning_rate", float),
         }
         paths = {
             "SFT_TRAIN_PATH": (cfg.data, "train_path"),
