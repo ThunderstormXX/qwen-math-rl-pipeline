@@ -12,14 +12,24 @@ mkdir -p "${TARGET}"
 echo "[data] Downloading openbmb/UltraData-SFT-2605 to ${TARGET}"
 
 if command -v hf >/dev/null 2>&1; then
-  hf download openbmb/UltraData-SFT-2605 \
+  if ! hf download openbmb/UltraData-SFT-2605 \
     --repo-type dataset \
     --local-dir "${TARGET}"
+  then
+    echo "[data] Download failed. This dataset may require Hugging Face approval."
+    echo "[data] Open https://huggingface.co/datasets/openbmb/UltraData-SFT-2605"
+    echo "[data] Request access, then run: hf auth login"
+    exit 1
+  fi
 elif command -v huggingface-cli >/dev/null 2>&1; then
-  huggingface-cli download openbmb/UltraData-SFT-2605 \
+  if ! huggingface-cli download openbmb/UltraData-SFT-2605 \
     --repo-type dataset \
     --local-dir "${TARGET}" \
     --local-dir-use-symlinks False
+  then
+    echo "[data] Download failed. Request dataset approval and run: hf auth login"
+    exit 1
+  fi
 else
   echo "[data] Missing Hugging Face CLI. Install huggingface_hub or run: hf auth login"
   exit 1

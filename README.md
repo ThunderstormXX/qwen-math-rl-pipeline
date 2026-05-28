@@ -84,6 +84,10 @@ bash scripts/datasets/sft/download_ultradata.sh
 bash scripts/datasets/rl/download_dapo_math.sh
 ```
 
+`openbmb/UltraData-SFT-2605` may require Hugging Face approval. If the download
+prints `Access denied. This repository requires approval`, open the dataset page,
+request access, run `hf auth login`, and rerun the SFT download script.
+
 4. Prepare demo subsets:
 
 ```bash
