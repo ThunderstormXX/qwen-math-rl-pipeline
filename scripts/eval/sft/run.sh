@@ -8,6 +8,9 @@ if [ -f .env ]; then
   set +a
 fi
 mkdir -p outputs/reports/sft_eval
+if [ -n "${GPU_ID:-}" ]; then
+  export CUDA_VISIBLE_DEVICES="${GPU_ID}"
+fi
 export PYTHONPATH="${PWD}/src:${PYTHONPATH:-}"
 MODEL_PATH="${MODEL_PATH:-models/sft_models/final/demo_sft_final}"
 echo "[eval] Evaluating SFT model at ${MODEL_PATH}"

@@ -8,6 +8,9 @@ if [ -f .env ]; then
   set +a
 fi
 mkdir -p outputs/reports/base_eval
+if [ -n "${GPU_ID:-}" ]; then
+  export CUDA_VISIBLE_DEVICES="${GPU_ID}"
+fi
 export PYTHONPATH="${PWD}/src:${PYTHONPATH:-}"
 echo "[eval] Evaluating base model"
 python -m qwen_sft_rlvr.pipeline.eval_pipeline \

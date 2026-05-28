@@ -8,6 +8,9 @@ if [ -f .env ]; then
   set +a
 fi
 mkdir -p models/rl_models/training_checkpoints/demo models/rl_models/final
+if [ -n "${GPU_ID:-}" ]; then
+  export CUDA_VISIBLE_DEVICES="${GPU_ID}"
+fi
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 export TOKENIZERS_PARALLELISM=false
 export PYTHONPATH="${PWD}/src:${PYTHONPATH:-}"

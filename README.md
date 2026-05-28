@@ -32,6 +32,7 @@ weights, checkpoints, logs, and generated outputs on the GPU server.
 bash scripts/setup/create_env.sh
 bash scripts/setup/install_deps.sh
 bash scripts/setup/check_gpu.sh
+bash scripts/setup/select_gpu.sh
 ```
 
 ## Server Launch Order
@@ -147,6 +148,13 @@ For SFT or RL checkpoints, override `MODEL_PATH`:
 ```bash
 MODEL_PATH=models/sft_models/final/demo_sft_final \
 CUDA_VISIBLE_DEVICES=5 bash scripts/models/generate_once.sh --math --prompt 'Solve 2x+3=9.'
+```
+
+Most run scripts accept `GPU_ID` as a short alias:
+
+```bash
+bash scripts/setup/select_gpu.sh
+GPU_ID=2 bash scripts/sft-training/demo/run.sh
 ```
 
 6. For the real `exp_001` run, prepare larger subsets and run:
