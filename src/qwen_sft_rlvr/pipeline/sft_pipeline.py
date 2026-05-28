@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from qwen_sft_rlvr.core.jsonl import read_jsonl
@@ -14,6 +15,7 @@ from qwen_sft_rlvr.training.sft_trainer import SFTTrainerRunner
 class SFTPipeline(BasePipeline):
     def run(self) -> str:
         cfg = self.config
+        self._env_overrides(cfg)
         train = self._load_data(cfg.data.train_path, cfg.data.get("max_examples"))
         val = self._load_data(cfg.data.val_path, None)
         model = ModelLoader().load(
@@ -22,6 +24,7 @@ class SFTPipeline(BasePipeline):
             attn_implementation=cfg.model.get("attn_implementation"),
             gradient_checkpointing=True,
         )
+        self._disable_unsafe_packing(cfg, model)
         tokenizer = TokenizerLoader().load(cfg.model.path)
         manager = CheckpointManager(cfg.output.checkpoint_dir, cfg.output.final_dir)
         manager.create_dirs()
@@ -40,6 +43,27 @@ class SFTPipeline(BasePipeline):
         if not records:
             raise ValueError(f"No SFT records loaded from {path}")
         return records
+
+    def _env_overrides(self, cfg) -> None:
+        pairs = {
+            "SFT_MAX_EXAMPLES": (cfg.data, "max_examples", int),
+            "SFT_MAX_SEQ_LEN": (cfg.data, "max_seq_len", int),
+            "SFT_BATCH_SIZE": (cfg.training, "per_device_train_batch_size", int),
+            "SFT_GRAD_ACCUM": (cfg.training, "gradient_accumulation_steps", int),
+        }
+        for name, (section, key, cast) in pairs.items():
+            if os.getenv(name):
+                section[key] = cast(os.environ[name])
+                print(f"[sft] override {key}={section[key]}", flush=True)
+        if os.getenv("SFT_PACKING"):
+            cfg.data.packing = os.environ["SFT_PACKING"].lower() == "true"
+            print(f"[sft] override packing={cfg.data.packing}", flush=True)
+
+    def _disable_unsafe_packing(self, cfg, model) -> None:
+        attn = getattr(model.config, "_attn_implementation", "")
+        if cfg.data.get("packing") and "flash" not in str(attn):
+            cfg.data.packing = False
+            print(f"[sft] disabled packing for attn_implementation={attn}", flush=True)
 
     def _summary(self, final_dir: str, final_path: str) -> None:
         path = Path(final_dir) / "summary.json"
