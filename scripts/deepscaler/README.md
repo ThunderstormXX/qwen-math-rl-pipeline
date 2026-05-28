@@ -15,10 +15,18 @@ bash scripts/deepscaler/datasets/download_benchmarks.sh
 bash scripts/deepscaler/datasets/prepare_benchmarks.sh
 
 GPU_ID=2 bash scripts/deepscaler/datasets/generate_teacher_sft_demo.sh
+bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
 GPU_ID=2 bash scripts/deepscaler/eval/base/run.sh
 GPU_ID=2 bash scripts/deepscaler/sft-distill/demo/run.sh
 GPU_ID=2 bash scripts/deepscaler/eval/student/run.sh
 bash scripts/deepscaler/reports/compare.sh
+```
+
+Inspect a specific generated teacher answer:
+
+```bash
+TEACHER_INSPECT_INDEX=0 bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
+TEACHER_INSPECT_WHERE=first-wrong bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
 ```
 
 Full reference-style eval is expensive:

@@ -196,6 +196,7 @@ bash scripts/deepscaler/datasets/download_train_dataset.sh
 bash scripts/deepscaler/datasets/download_benchmarks.sh
 bash scripts/deepscaler/datasets/prepare_benchmarks.sh
 GPU_ID=2 bash scripts/deepscaler/datasets/generate_teacher_sft_demo.sh
+bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
 GPU_ID=2 bash scripts/deepscaler/eval/base/run.sh
 GPU_ID=2 bash scripts/deepscaler/sft-distill/demo/run.sh
 GPU_ID=2 bash scripts/deepscaler/eval/student/run.sh

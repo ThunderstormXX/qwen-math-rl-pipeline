@@ -110,6 +110,13 @@ GPU_ID=2 TEACHER_MAX_EXAMPLES=100 TEACHER_MAX_NEW_TOKENS=1024 \
 bash scripts/deepscaler/datasets/generate_teacher_sft_demo.sh
 ```
 
+Inspect one generated answer and its reward:
+
+```bash
+bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
+TEACHER_INSPECT_WHERE=first-correct bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
+```
+
 Evaluate the pre-RL base model on benchmark smoke subsets:
 
 ```bash
