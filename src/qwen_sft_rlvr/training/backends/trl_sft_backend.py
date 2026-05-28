@@ -44,6 +44,10 @@ class TRLSFTBackend(SFTBackend):
             "save_steps": cfg.training.save_steps,
             "eval_steps": cfg.training.eval_steps,
             "save_strategy": "steps",
+            "dataset_text_field": "text",
+            "packing": cfg.data.packing,
+            "max_seq_length": cfg.data.max_seq_len,
+            "max_length": cfg.data.max_seq_len,
         }
         params.update(self._eval_arg(cls))
         return cls(**self._supported(cls, params))
@@ -68,19 +72,21 @@ class TRLSFTBackend(SFTBackend):
         return Dataset.from_list(list(rows))
 
     def _trainer(self, trainer_cls, args, train, val):
-        base = {
-            "model": self.model,
-            "args": args,
-            "train_dataset": train,
-            "eval_dataset": val,
-            "dataset_text_field": "text",
-            "packing": self.config.data.packing,
-            "max_seq_length": self.config.data.max_seq_len,
-        }
+        base = {"model": self.model, "args": args, "train_dataset": train, "eval_dataset": val}
+        base = self._supported(trainer_cls, base)
+        extras = self._supported(
+            trainer_cls,
+            {
+                "dataset_text_field": "text",
+                "packing": self.config.data.packing,
+                "max_seq_length": self.config.data.max_seq_len,
+            },
+        )
+        base.update(extras)
         attempts = [
-            {**base, "processing_class": self.tokenizer},
-            {**base, "tokenizer": self.tokenizer},
-            {k: v for k, v in {**base, "tokenizer": self.tokenizer}.items() if k != "max_seq_length"},
+            self._supported(trainer_cls, {**base, "processing_class": self.tokenizer}),
+            self._supported(trainer_cls, {**base, "tokenizer": self.tokenizer}),
+            base,
         ]
         for kwargs in attempts:
             try:
