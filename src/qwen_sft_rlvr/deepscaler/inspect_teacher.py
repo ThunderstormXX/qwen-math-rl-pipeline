@@ -32,10 +32,13 @@ class TeacherSFTInspector:
                 f"teacher_model: {row.get('teacher_model', '')}",
                 f"ground_truth: {row.get('ground_truth', '')}",
                 f"prediction: {row.get('prediction', '')}",
+                f"deepscaler_prediction: {row.get('deepscaler_prediction', '')}",
                 f"parseable: {row.get('parseable')}",
                 f"correctness_reward: {row.get('correctness')}",
                 f"format_reward: {row.get('format')}",
                 f"composite_reward: {row.get('composite')}",
+                f"deepscaler_reward: {row.get('deepscaler_reward')}",
+                f"deepscaler_strict_reward: {row.get('deepscaler_strict_reward')}",
                 "",
                 "## Problem",
                 self._clip(str(row.get("problem", "")), problem_chars),
@@ -71,9 +74,13 @@ class TeacherSFTInspector:
         path = Path(summary_path)
         if path.exists():
             summary = json.loads(path.read_text(encoding="utf-8"))
-            for key in ["parse_rate", "correct_rate", "format_rate", "mean_reward"]:
+            for key in self._summary_keys():
                 lines.append(f"{key}: {summary.get(key)}")
         return "\n".join(lines)
+
+    def _summary_keys(self) -> tuple[str, ...]:
+        return ("parse_rate", "correct_rate", "format_rate", "mean_reward",
+                "deepscaler_mean_reward", "deepscaler_strict_mean_reward")
 
     def _split_counts(self, sft_dir: str) -> list[str]:
         counts = []

@@ -51,6 +51,21 @@ TEACHER_INSPECT_WHERE=first-wrong bash scripts/deepscaler/datasets/inspect_teach
 without running the teacher model again. It writes `.bak` copies of the previous
 reward and summary files.
 
+DeepScaleR-style reward check:
+
+```bash
+bash scripts/deepscaler/datasets/rescore_teacher_sft_demo.sh
+bash scripts/deepscaler/datasets/inspect_teacher_sft_demo.sh
+```
+
+Use `deepscaler_mean_reward` as the comparable binary reward: `1.0` for a
+correct final boxed answer and `0.0` for incorrect or malformed answers.
+`deepscaler_strict_mean_reward` additionally requires explicit
+`<think>...</think>` delimiters and may be lower for decoded HF generations.
+NVIDIA's public DeepScaleR reproduction reports about `0.65` average training
+reward around 400 GRPO steps; use that as a rough reference, not an exact target
+for a 100-sample teacher-generation slice.
+
 Full reference-style eval is expensive:
 
 ```bash
