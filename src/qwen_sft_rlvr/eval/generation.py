@@ -13,10 +13,18 @@ class GenerationRunner:
         self.parser = parser or AnswerParser()
 
     def run(self, config, records: list[dict], output_path: str) -> list[dict]:
+        print(f"[eval] Loading model from {config.model.path}", flush=True)
         model = ModelLoader().load(config.model.path, dtype=config.model.get("dtype", "bf16"))
+        model = self._place_model(model)
+        model.eval()
+        print("[eval] Loading tokenizer", flush=True)
         tokenizer = TokenizerLoader().load(config.model.path)
-        rows = [self._generate_one(model, tokenizer, config, row) for row in records]
+        print(f"[eval] Generating {len(records)} samples", flush=True)
+        rows = []
+        for row in self._progress(records):
+            rows.append(self._generate_one(model, tokenizer, config, row))
         write_jsonl(output_path, rows)
+        print(f"[eval] Wrote generations to {output_path}", flush=True)
         return rows
 
     def _generate_one(self, model: Any, tokenizer: Any, config, row: dict) -> dict:
@@ -51,3 +59,21 @@ class GenerationRunner:
             "parseable": pred is not None,
             "response_length": len(text),
         }
+
+    def _place_model(self, model: Any) -> Any:
+        import torch
+
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+            print(f"[eval] Moving model to {device}", flush=True)
+            return model.to(device)
+        print("[eval] CUDA unavailable; using current model device", flush=True)
+        return model
+
+    def _progress(self, records: list[dict]):
+        try:
+            from tqdm.auto import tqdm
+
+            return tqdm(records, desc="[eval] samples", unit="sample")
+        except ImportError:
+            return records
