@@ -13,4 +13,6 @@ echo "[eval] Evaluating base model"
 python -m qwen_sft_rlvr.pipeline.eval_pipeline \
   --config configs/eval/base_eval.yaml \
   --model-path models/base_models/Qwen3.5-2B-Base \
-  --output-dir outputs/reports/base_eval
+  --output-dir outputs/reports/base_eval \
+  --max-samples "${EVAL_MAX_SAMPLES:-10}" \
+  --max-new-tokens "${EVAL_MAX_NEW_TOKENS:-256}"

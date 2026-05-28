@@ -124,6 +124,13 @@ bash scripts/eval/rl/run.sh
 bash scripts/reports/compare_checkpoints.sh
 ```
 
+Eval scripts default to a fast smoke setting, `EVAL_MAX_SAMPLES=10` and
+`EVAL_MAX_NEW_TOKENS=256`. For a longer eval, override them:
+
+```bash
+EVAL_MAX_SAMPLES=50 EVAL_MAX_NEW_TOKENS=1024 bash scripts/eval/base/run.sh
+```
+
 6. For the real `exp_001` run, prepare larger subsets and run:
 
 ```bash

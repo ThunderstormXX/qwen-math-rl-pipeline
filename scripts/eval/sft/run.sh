@@ -14,4 +14,6 @@ echo "[eval] Evaluating SFT model at ${MODEL_PATH}"
 python -m qwen_sft_rlvr.pipeline.eval_pipeline \
   --config configs/eval/sft_eval.yaml \
   --model-path "${MODEL_PATH}" \
-  --output-dir outputs/reports/sft_eval
+  --output-dir outputs/reports/sft_eval \
+  --max-samples "${EVAL_MAX_SAMPLES:-10}" \
+  --max-new-tokens "${EVAL_MAX_NEW_TOKENS:-256}"
