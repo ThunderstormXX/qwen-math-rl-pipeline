@@ -229,6 +229,7 @@ bash scripts/reports/compare_checkpoints.sh
 - `scripts/`: server-facing interface; scripts call Python entrypoints only.
 - `src/qwen_sft_rlvr/`: package code.
 - `tests/`: CPU unit tests for parsing, rewards, formatting, paths, configs.
+- `docs/demo_experiment.md`: first server demo run notes and observed improvements.
 - `data/`, `models/`, `outputs/`: server artifacts, ignored except `.gitkeep`.
 
 ## Backends
