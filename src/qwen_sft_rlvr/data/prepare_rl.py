@@ -22,20 +22,27 @@ class RLDataPreparer:
         eval_output_dir: str | Path | None = None,
     ) -> int:
         records = []
+        first_raw = None
         for raw in self.reader.read():
+            first_raw = first_raw or raw
             built = self.builder.build(raw)
             if built:
                 records.append(built)
             if len(records) >= max_examples:
                 break
         if not records:
-            raise ValueError("Prepared 0 RL records; check dataset schema")
+            raise ValueError(f"Prepared 0 RL records; first row schema: {self._schema(first_raw)}")
         DatasetWriter().split_write(records, output_dir, val_ratio)
         if eval_output_dir:
             val_size = max(1, int(len(records) * val_ratio)) if records else 0
             evals = [self.builder.build_eval(r) for r in records[:val_size]]
             write_jsonl(Path(eval_output_dir) / "eval.jsonl", evals)
         return len(records)
+
+    def _schema(self, row: dict | None) -> dict:
+        if not row:
+            return {}
+        return {key: type(value).__name__ for key, value in row.items()}
 
 
 def parse_args() -> argparse.Namespace:

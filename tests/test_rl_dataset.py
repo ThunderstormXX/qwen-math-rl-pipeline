@@ -11,3 +11,15 @@ def test_dapo_schema_builds_record():
     assert record["ground_truth"] == "4"
     assert "What is 2+2?" in record["problem"]
     assert "Remember to put" not in record["problem"]
+
+
+def test_dapo_parquet_like_schema_builds_record():
+    class ArrayLike:
+        def tolist(self):
+            return [{"content": "Solve.\n\nFind x.\n\nRemember to put answer."}]
+
+    raw = {"prompt": ArrayLike(), "reward_model": '{"ground_truth": "x"}'}
+    record = RLRecordBuilder().build(raw)
+    assert record is not None
+    assert record["ground_truth"] == "x"
+    assert record["problem"] == "Find x."

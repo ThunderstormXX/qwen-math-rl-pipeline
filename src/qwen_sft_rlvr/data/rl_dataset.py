@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from qwen_sft_rlvr.data.formatting import PromptFormatter
 
 
@@ -36,16 +38,19 @@ class RLRecordBuilder:
 
     def _problem(self, raw: dict) -> str | None:
         prompt = raw.get("prompt")
-        if isinstance(prompt, list) and prompt:
-            first = prompt[0]
-            if isinstance(first, dict):
-                return self._clean_problem(str(first.get("content", "")))
+        prompt = self._json(prompt)
         if isinstance(prompt, str):
             return self._clean_problem(prompt)
+        items = self._items(prompt)
+        if items:
+            first = self._json(items[0])
+            if isinstance(first, dict):
+                content = first.get("content") or first.get("value")
+                return self._clean_problem(str(content or ""))
         return self._first(raw, ["problem", "question", "query", "input"])
 
     def _answer(self, raw: dict) -> str | None:
-        reward = raw.get("reward_model")
+        reward = self._json(raw.get("reward_model"))
         if isinstance(reward, dict):
             value = reward.get("ground_truth")
             if value is not None and str(value).strip():
@@ -58,3 +63,26 @@ class RLRecordBuilder:
             return text.strip()
         kept = [c for c in chunks[1:] if not c.lower().startswith("remember to put")]
         return "\n\n".join(kept).strip() or text.strip()
+
+    def _items(self, value) -> list:
+        if value is None or isinstance(value, (str, bytes)):
+            return []
+        if hasattr(value, "tolist"):
+            value = value.tolist()
+        if isinstance(value, dict):
+            return [value]
+        try:
+            return list(value)
+        except TypeError:
+            return []
+
+    def _json(self, value):
+        if not isinstance(value, str):
+            return value
+        text = value.strip()
+        if not text or text[0] not in "[{":
+            return value
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            return value
