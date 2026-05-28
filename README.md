@@ -47,6 +47,15 @@ bash scripts/setup/install_deps.sh
 bash scripts/setup/check_gpu.sh
 ```
 
+Use Python 3.10, 3.11, or 3.12 for the GPU stack. If the server defaults to
+Python 3.13, create the environment explicitly:
+
+```bash
+PYTHON_BIN=python3.11 bash scripts/setup/create_env.sh
+source .venv/bin/activate
+bash scripts/setup/install_deps.sh
+```
+
 2. Download and verify the base model:
 
 ```bash
@@ -164,6 +173,8 @@ directories are ignored. Keep only code, configs, docs, scripts, tests, and
 ## Troubleshooting
 
 - CUDA not available: run `bash scripts/setup/check_gpu.sh` and check drivers.
+- Broken `.venv` or missing `encodings`: remove it and recreate with
+  `rm -rf .venv && PYTHON_BIN=python3.11 bash scripts/setup/create_env.sh`.
 - Missing HF token: run `huggingface-cli login` on the server.
 - Missing model files: run `bash scripts/models/verify_base_model.sh`.
 - TRL API mismatch: upgrade or pin `trl`; wrappers raise the mismatched call.

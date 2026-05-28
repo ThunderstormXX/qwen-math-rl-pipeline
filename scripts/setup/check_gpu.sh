@@ -10,9 +10,18 @@ fi
 echo "[gpu] nvidia-smi"
 nvidia-smi
 echo "[gpu] python version"
-PYTHON="${PYTHON:-python}"
 if [ -x .venv/bin/python ]; then
   PYTHON=".venv/bin/python"
+else
+  PYTHON="${PYTHON:-python}"
+fi
+if ! "${PYTHON}" - <<'PY' >/dev/null 2>&1
+import encodings
+PY
+then
+  echo "[gpu] Selected Python is broken: ${PYTHON}"
+  echo "      Recreate .venv with Python 3.10, 3.11, or 3.12."
+  exit 1
 fi
 "${PYTHON}" --version
 echo "[gpu] torch CUDA check"

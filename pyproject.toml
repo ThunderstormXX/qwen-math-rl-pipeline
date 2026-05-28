@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "qwen-sft-rlvr"
 version = "0.1.0"
 description = "SFT and RLVR post-training pipeline for Qwen math experiments"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.13"
 dependencies = [
   "torch",
   "transformers",
