@@ -82,6 +82,33 @@ GPU_ID=2 SFT_MAX_SEQ_LEN=1024 SFT_BATCH_SIZE=1 \
 bash scripts/deepscaler/sft-distill/demo_correct/run.sh
 ```
 
+Full-size teacher generation, close to the original DeepScaleR RL train set
+size:
+
+```bash
+GPU_ID=2 TEACHER_MAX_EXAMPLES=40300 TEACHER_MAX_NEW_TOKENS=2048 \
+bash scripts/deepscaler/datasets/generate_teacher_sft_experiment.sh
+```
+
+This writes incrementally and is safe to resume. Main files:
+
+```text
+data/processed/deepscaler/teacher_sft/exp_001/all.jsonl
+data/processed/deepscaler/teacher_sft/exp_001/train.jsonl
+data/processed/deepscaler/teacher_sft/exp_001/val.jsonl
+outputs/deepscaler/teacher_sft/exp_001/rewards.jsonl
+outputs/deepscaler/teacher_sft/exp_001/summary.json
+```
+
+At the demo speed, `40300` samples can take many days on one GPU. Run it in
+`tmux`/`screen`, and resume by running the same command again.
+
+Filter correct-only experiment samples:
+
+```bash
+bash scripts/deepscaler/datasets/filter_correct_teacher_sft_experiment.sh
+```
+
 Full reference-style eval is expensive:
 
 ```bash

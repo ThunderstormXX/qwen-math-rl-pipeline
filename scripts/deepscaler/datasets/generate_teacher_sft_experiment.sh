@@ -15,5 +15,5 @@ mkdir -p data/processed/deepscaler/teacher_sft/exp_001 outputs/deepscaler/teache
 echo "[deepscaler] Generating experiment SFT data from teacher"
 python scripts/deepscaler/python_scripts/generate_teacher_sft.py \
   --config configs/deepscaler/teacher_sft_experiment.yaml \
-  --max-examples "${TEACHER_MAX_EXAMPLES:-40000}" \
+  --max-examples "${TEACHER_MAX_EXAMPLES:-40300}" \
   --max-new-tokens "${TEACHER_MAX_NEW_TOKENS:-2048}"

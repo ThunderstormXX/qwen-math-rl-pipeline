@@ -12,7 +12,7 @@ data:
   split: train
   local_dir: data/raw/deepscaler/train/DeepScaleR-Preview-Dataset
   streaming: true
-  max_examples: 40000
+  max_examples: 40300
   val_ratio: 0.02
 
 generation:

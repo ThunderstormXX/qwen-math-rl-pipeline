@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
 from typing import Any
 
-from qwen_sft_rlvr.core.jsonl import write_jsonl
-from qwen_sft_rlvr.data.base import DatasetWriter
 from qwen_sft_rlvr.data.formatting import PromptFormatter
 from qwen_sft_rlvr.deepscaler.reward_view import TeacherRewardView
 from qwen_sft_rlvr.deepscaler.source import DeepScaleRTrainSource
+from qwen_sft_rlvr.deepscaler.teacher_outputs import TeacherOutputStore
 from qwen_sft_rlvr.models.loader import ModelLoader
 from qwen_sft_rlvr.models.tokenizer import TokenizerLoader
 
@@ -23,27 +20,23 @@ class TeacherSFTGenerator:
         from tqdm.auto import tqdm
 
         model, tokenizer = self._load_model()
-        records, reward_rows = [], []
+        store = TeacherOutputStore(self.config, self.scorer)
+        done = store.resume_count()
         max_examples = int(self.config.data.get("max_examples", 0))
         source = DeepScaleRTrainSource(self.config).read()
-        progress = tqdm(source, total=max_examples or None, desc="[deepscaler] teacher samples")
+        for _ in range(done):
+            next(source, None)
+        remaining = max(max_examples - done, 0) if max_examples else None
+        progress = tqdm(source, total=remaining, desc="[deepscaler] teacher samples")
         for raw in progress:
+            if max_examples and done >= max_examples:
+                break
             row = self._generate_one(raw, model, tokenizer)
             if row is None:
                 continue
-            records.append(row["sft"])
-            reward_rows.append(row["reward"])
-            if max_examples and len(records) >= max_examples:
-                break
-        if not records:
-            raise ValueError("Generated 0 teacher SFT records")
-        out_dir = self.config.output.sft_dir
-        DatasetWriter().split_write(records, out_dir, float(self.config.data.val_ratio))
-        write_jsonl(self.config.output.rewards_path, reward_rows)
-        summary = self.scorer.summary(reward_rows, out_dir)
-        Path(self.config.output.summary_path).parent.mkdir(parents=True, exist_ok=True)
-        Path(self.config.output.summary_path).write_text(json.dumps(summary, indent=2), "utf-8")
-        return summary
+            store.append(row)
+            done += 1
+        return store.finalize()
 
     def _load_model(self) -> tuple[Any, Any]:
         import torch
