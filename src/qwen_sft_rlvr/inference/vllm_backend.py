@@ -20,6 +20,11 @@ class VLLMBackend:
         from vllm import LLM, SamplingParams
 
         llm = self._load_llm(LLM)
+        return self.generate_with_llm(llm, prompts)
+
+    def generate_with_llm(self, llm, prompts: list[str]) -> tuple[list[str], list[int], list[int]]:
+        from vllm import SamplingParams
+
         sampling = SamplingParams(
             max_tokens=int(self.config.generation.max_new_tokens),
             temperature=float(self.config.generation.temperature),

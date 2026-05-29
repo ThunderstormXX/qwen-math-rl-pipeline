@@ -151,6 +151,25 @@ BENCHMARK_MAX_NEW_TOKENS=2048 BENCHMARK_MAX_NUM_SEQS=32 \
 BENCHMARK_RUN_NAME=vllm_probe bash scripts/deepscaler/inference/benchmark.sh
 ```
 
+Generate a real 1k teacher-SFT sample with vLLM:
+
+```bash
+GPU_ID=0 TEACHER_MAX_EXAMPLES=1000 TEACHER_MAX_NEW_TOKENS=4096 \
+VLLM_MAX_NUM_SEQS=16 VLLM_PROMPT_BATCH_SIZE=256 \
+bash scripts/deepscaler/datasets/generate_teacher_sft_vllm_1k.sh
+```
+
+This writes the same SFT/reward format as the transformers generator, but under
+separate paths:
+
+```text
+data/processed/deepscaler/teacher_sft/exp_001_vllm_1k/all.jsonl
+data/processed/deepscaler/teacher_sft/exp_001_vllm_1k/train.jsonl
+data/processed/deepscaler/teacher_sft/exp_001_vllm_1k/val.jsonl
+outputs/deepscaler/teacher_sft/exp_001_vllm_1k/rewards.jsonl
+outputs/deepscaler/teacher_sft/exp_001_vllm_1k/summary.json
+```
+
 Benchmark outputs:
 
 ```text
