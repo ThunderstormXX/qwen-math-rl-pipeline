@@ -38,6 +38,7 @@ class TeacherSFTInspector:
                 f"format_reward: {row.get('format')}",
                 f"composite_reward: {row.get('composite')}",
                 f"deepscaler_reward: {row.get('deepscaler_reward')}",
+                f"deepscaler_match_reward: {row.get('deepscaler_match_reward')}",
                 f"deepscaler_strict_reward: {row.get('deepscaler_strict_reward')}",
                 "",
                 "## Problem",
@@ -80,7 +81,8 @@ class TeacherSFTInspector:
 
     def _summary_keys(self) -> tuple[str, ...]:
         return ("parse_rate", "correct_rate", "format_rate", "mean_reward",
-                "deepscaler_mean_reward", "deepscaler_strict_mean_reward")
+                "deepscaler_mean_reward", "deepscaler_match_mean_reward",
+                "deepscaler_strict_mean_reward")
 
     def _split_counts(self, sft_dir: str) -> list[str]:
         counts = []

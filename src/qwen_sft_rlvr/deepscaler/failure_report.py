@@ -36,7 +36,8 @@ class TeacherFailureReporter:
         summary = self._load_summary(summary_path)
         mean = sum(float(row.get(score_field, 0.0)) for row in rows) / len(rows)
         keys = ["parse_rate", "correct_rate", "format_rate", "mean_reward",
-                "deepscaler_mean_reward", "deepscaler_strict_mean_reward"]
+                "deepscaler_mean_reward", "deepscaler_match_mean_reward",
+                "deepscaler_strict_mean_reward"]
         lines = [f"reward_rows: {len(rows)}", f"score_field: {score_field}", f"{score_field}_mean: {mean}"]
         for key in keys:
             if key in summary:
@@ -67,6 +68,7 @@ class TeacherFailureReporter:
             f"format: {row.get('format')}",
             f"composite: {row.get('composite')}",
             f"deepscaler_reward: {row.get('deepscaler_reward')}",
+            f"deepscaler_match_reward: {row.get('deepscaler_match_reward')}",
             "",
             "Problem:",
             self._clip(str(row.get("problem", "")), problem_chars),

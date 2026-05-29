@@ -20,6 +20,7 @@ dependencies = [
   "tqdm",
   "numpy",
   "pandas",
+  "sympy",
   "pytest",
 ]
 

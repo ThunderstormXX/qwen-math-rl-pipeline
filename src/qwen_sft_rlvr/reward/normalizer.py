@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import re
 
+from qwen_sft_rlvr.reward.sympy_verifier import SympyAnswerVerifier
+
 
 class AnswerNormalizer:
     frac_re = re.compile(r"(-?)\\(?:[dt]?frac)\{([^{}]+)\}\{([^{}]+)\}")
@@ -18,6 +20,7 @@ class AnswerNormalizer:
         value = value.replace(",", "").replace("\\left", "").replace("\\right", "")
         value = value.replace("\\%", "").replace("%", "")
         value = value.replace("^{\\circ}", "").replace("^\\circ", "").replace("\\circ", "")
+        value = value.replace("\\pi", "pi").replace("π", "pi")
         return re.sub(r"\s+", "", value)
 
     def equivalent(self, pred: str, gold: str) -> bool:
@@ -27,7 +30,9 @@ class AnswerNormalizer:
         if self._set_items(left) and self._set_items(left) == self._set_items(right):
             return True
         left_num, right_num = self._numeric(left), self._numeric(right)
-        return left_num is not None and right_num is not None and abs(left_num - right_num) <= 1e-9
+        if left_num is not None and right_num is not None and abs(left_num - right_num) <= 1e-9:
+            return True
+        return SympyAnswerVerifier().equivalent(left, right)
 
     def _preclean(self, answer: str) -> str:
         value = answer.strip().strip("$").rstrip(".")

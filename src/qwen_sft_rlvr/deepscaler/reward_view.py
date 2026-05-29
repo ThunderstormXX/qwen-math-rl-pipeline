@@ -33,6 +33,7 @@ class TeacherRewardView:
             "deepscaler_prediction": ds["prediction"],
             "deepscaler_parseable": ds["parseable"],
             "deepscaler_reward": ds["reward"],
+            "deepscaler_match_reward": ds["reward"],
             "deepscaler_strict_reward": strict["reward"],
         }
 
@@ -46,5 +47,6 @@ class TeacherRewardView:
             "format_rate": sum(r["format"] for r in rows) / n,
             "mean_reward": sum(r["composite"] for r in rows) / n,
             "deepscaler_mean_reward": sum(r["deepscaler_reward"] for r in rows) / n,
+            "deepscaler_match_mean_reward": sum(r["deepscaler_match_reward"] for r in rows) / n,
             "deepscaler_strict_mean_reward": sum(r["deepscaler_strict_reward"] for r in rows) / n,
         }

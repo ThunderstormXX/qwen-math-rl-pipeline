@@ -19,6 +19,10 @@ class DeepScaleRBinaryReward:
             "reward": 1.0 if correct else 0.0,
         }
 
+    def original_score(self, response: str, ground_truth: str) -> dict:
+        strict = DeepScaleRBinaryReward(strict_think=True, parser=self.parser)
+        return strict.score(response, ground_truth)
+
     def _solution(self, response: str) -> str | None:
         has_start = "<think>" in response
         has_end = "</think>" in response
