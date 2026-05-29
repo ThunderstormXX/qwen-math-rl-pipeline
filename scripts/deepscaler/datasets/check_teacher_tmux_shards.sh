@@ -36,7 +36,7 @@ proc_env() {
   local pid="$1"
   if [ -r "/proc/${pid}/environ" ]; then
     tr '\0' '\n' < "/proc/${pid}/environ" \
-      | grep -E '^(CUDA_VISIBLE_DEVICES|TEACHER_SHARD_INDEX|TEACHER_SHARD_COUNT|TEACHER_MAX_EXAMPLES|TEACHER_MAX_NEW_TOKENS)=' \
+      | grep -E '^(CUDA_DEVICE_ORDER|CUDA_VISIBLE_DEVICES|TEACHER_SHARD_INDEX|TEACHER_SHARD_COUNT|TEACHER_MAX_EXAMPLES|TEACHER_MAX_NEW_TOKENS)=' \
       | sort || true
   fi
 }

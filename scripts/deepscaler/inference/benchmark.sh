@@ -7,6 +7,7 @@ if [ -f .env ]; then
   . ./.env
   set +a
 fi
+export CUDA_DEVICE_ORDER="${CUDA_DEVICE_ORDER:-PCI_BUS_ID}"
 if [ -n "${GPU_ID:-}" ]; then export CUDA_VISIBLE_DEVICES="${GPU_ID}"; fi
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 export TOKENIZERS_PARALLELISM=false
@@ -34,7 +35,7 @@ if [ -n "${BENCHMARK_MAX_MODEL_LEN:-}" ]; then
   args+=(--max-model-len "${BENCHMARK_MAX_MODEL_LEN}")
 fi
 
-echo "[bench] backend=${backend} gpu=${CUDA_VISIBLE_DEVICES} output=${output_dir}"
+echo "[bench] backend=${backend} cuda_device_order=${CUDA_DEVICE_ORDER} gpu=${CUDA_VISIBLE_DEVICES} output=${output_dir}"
 python scripts/deepscaler/python_scripts/benchmark_inference.py \
   --config "${BENCHMARK_CONFIG:-configs/deepscaler/teacher_sft_experiment.yaml}" \
   --backend "${backend}" \

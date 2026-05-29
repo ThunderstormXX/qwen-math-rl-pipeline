@@ -131,6 +131,9 @@ GPU_ID=0 BENCHMARK_RUN_NAME=smoke BENCHMARK_MAX_EXAMPLES=32 \
 BENCHMARK_MAX_NEW_TOKENS=1024 bash scripts/deepscaler/inference/benchmark_matrix.sh
 ```
 
+The DeepScaleR scripts set `CUDA_DEVICE_ORDER=PCI_BUS_ID`, so `GPU_ID`
+matches the physical `nvidia-smi` index.
+
 Default matrix compares `transformers` batching against `vLLM`. Add SGLang if
 it is installed:
 
