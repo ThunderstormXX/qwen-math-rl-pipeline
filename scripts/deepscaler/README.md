@@ -103,6 +103,21 @@ outputs/deepscaler/teacher_sft/exp_001/summary.json
 At the demo speed, `40300` samples can take many days on one GPU. Run it in
 `tmux`/`screen`, and resume by running the same command again.
 
+Parallel generation across GPUs:
+
+```bash
+TEACHER_SHARD_COUNT=4 TEACHER_MAX_EXAMPLES=250 TEACHER_MAX_NEW_TOKENS=4096 GPU_ID=0 TEACHER_SHARD_INDEX=0 bash scripts/deepscaler/datasets/generate_teacher_sft_experiment.sh
+TEACHER_SHARD_COUNT=4 TEACHER_MAX_EXAMPLES=250 TEACHER_MAX_NEW_TOKENS=4096 GPU_ID=1 TEACHER_SHARD_INDEX=1 bash scripts/deepscaler/datasets/generate_teacher_sft_experiment.sh
+TEACHER_SHARD_COUNT=4 TEACHER_MAX_EXAMPLES=250 TEACHER_MAX_NEW_TOKENS=4096 GPU_ID=2 TEACHER_SHARD_INDEX=2 bash scripts/deepscaler/datasets/generate_teacher_sft_experiment.sh
+TEACHER_SHARD_COUNT=4 TEACHER_MAX_EXAMPLES=250 TEACHER_MAX_NEW_TOKENS=4096 GPU_ID=3 TEACHER_SHARD_INDEX=3 bash scripts/deepscaler/datasets/generate_teacher_sft_experiment.sh
+```
+
+Then merge:
+
+```bash
+bash scripts/deepscaler/datasets/merge_teacher_sft_experiment_shards.sh
+```
+
 Filter correct-only experiment samples:
 
 ```bash
