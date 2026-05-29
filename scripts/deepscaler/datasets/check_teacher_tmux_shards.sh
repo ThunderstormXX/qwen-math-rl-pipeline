@@ -36,7 +36,7 @@ proc_env() {
   local pid="$1"
   if [ -r "/proc/${pid}/environ" ]; then
     tr '\0' '\n' < "/proc/${pid}/environ" \
-      | grep -E '^(CUDA_DEVICE_ORDER|CUDA_VISIBLE_DEVICES|TEACHER_SHARD_INDEX|TEACHER_SHARD_COUNT|TEACHER_MAX_EXAMPLES|TEACHER_MAX_NEW_TOKENS)=' \
+      | grep -E '^(CUDA_DEVICE_ORDER|CUDA_VISIBLE_DEVICES|TEACHER_VLLM_RUN_NAME|TEACHER_SHARD_INDEX|TEACHER_SHARD_COUNT|TEACHER_MAX_EXAMPLES|TEACHER_MAX_NEW_TOKENS|VLLM_MAX_NUM_SEQS|VLLM_PROMPT_BATCH_SIZE)=' \
       | sort || true
   fi
 }
@@ -80,7 +80,7 @@ for i in "${!sessions[@]}"; do
   found_python=0
   for pid in $(descendants "${pane_pid}"); do
     cmdline="$(proc_cmdline "${pid}")"
-    if [[ "${cmdline}" == *"generate_teacher_sft.py"* ]]; then
+    if [[ "${cmdline}" == *"generate_teacher_sft.py"* || "${cmdline}" == *"generate_teacher_sft_vllm.py"* ]]; then
       found_python=1
       env_text="$(proc_env "${pid}")"
       echo "python_pid: ${pid}"

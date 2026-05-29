@@ -170,6 +170,32 @@ outputs/deepscaler/teacher_sft/exp_001_vllm_1k/rewards.jsonl
 outputs/deepscaler/teacher_sft/exp_001_vllm_1k/summary.json
 ```
 
+Launch full teacher generation across two A100s with vLLM:
+
+```bash
+TEACHER_VLLM_RUN_NAME=exp_001_vllm_full \
+TEACHER_TOTAL_EXAMPLES=40300 TEACHER_GPUS="0 6" \
+TEACHER_TMUX_SESSIONS="vllm-teacher-gpu0 vllm-teacher-gpu6" \
+TEACHER_CLEAR_SHARDS=1 bash scripts/deepscaler/datasets/launch_teacher_sft_vllm_tmux_shards.sh
+```
+
+Monitor:
+
+```bash
+TEACHER_TMUX_SESSIONS="vllm-teacher-gpu0 vllm-teacher-gpu6" \
+TEACHER_SHARDS_DIR=data/processed/deepscaler/teacher_sft/exp_001_vllm_full_shards \
+bash scripts/deepscaler/datasets/check_teacher_tmux_shards.sh
+```
+
+Merge when both shards finish:
+
+```bash
+TEACHER_SHARDS_DIR=data/processed/deepscaler/teacher_sft/exp_001_vllm_full_shards \
+TEACHER_SFT_DIR=data/processed/deepscaler/teacher_sft/exp_001_vllm_full \
+TEACHER_REWARDS_PATH=outputs/deepscaler/teacher_sft/exp_001_vllm_full/rewards.jsonl \
+bash scripts/deepscaler/datasets/merge_teacher_sft_experiment_shards.sh
+```
+
 Benchmark outputs:
 
 ```text
