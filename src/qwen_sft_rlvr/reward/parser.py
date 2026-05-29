@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import re
 
+from qwen_sft_rlvr.reward.normalizer import AnswerNormalizer
+
 
 class AnswerParser:
     number_re = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
@@ -64,33 +66,7 @@ class AnswerParser:
     def normalize(self, answer: str) -> str:
         boxed = self.extract_boxed(answer)
         value = boxed if boxed is not None else answer
-        value = self._latex_fractions(value)
-        value = value.strip().strip("$").rstrip(".").replace(",", "")
-        value = value.replace("\\left", "").replace("\\right", "")
-        return re.sub(r"\s+", "", value)
+        return AnswerNormalizer().normalize(value)
 
     def equivalent(self, pred: str, gold: str) -> bool:
-        left = self.normalize(pred)
-        right = self.normalize(gold)
-        if left == right:
-            return True
-        left_num = self._numeric(left)
-        right_num = self._numeric(right)
-        if left_num is None or right_num is None:
-            return False
-        return abs(left_num - right_num) <= 1e-9
-
-    def _latex_fractions(self, value: str) -> str:
-        def replace(match: re.Match) -> str:
-            return f"{match.group(1)}{match.group(2).strip()}/{match.group(3).strip()}"
-
-        return self.latex_fraction_re.sub(replace, value)
-
-    def _numeric(self, value: str) -> float | None:
-        try:
-            if "/" in value:
-                numerator, denominator = value.split("/", maxsplit=1)
-                return float(numerator) / float(denominator)
-            return float(value)
-        except ValueError:
-            return None
+        return AnswerNormalizer().equivalent(self.normalize(pred), self.normalize(gold))
