@@ -26,6 +26,7 @@ dependencies = [
 
 [project.optional-dependencies]
 server = ["wandb", "deepspeed", "vllm", "ray"]
+inference = ["vllm", "sglang"]
 flash = ["flash-attn"]
 verl = ["verl"]
 openrlhf = ["openrlhf"]

@@ -124,6 +124,38 @@ Filter correct-only experiment samples:
 bash scripts/deepscaler/datasets/filter_correct_teacher_sft_experiment.sh
 ```
 
+Inference throughput benchmark:
+
+```bash
+GPU_ID=0 BENCHMARK_RUN_NAME=smoke BENCHMARK_MAX_EXAMPLES=32 \
+BENCHMARK_MAX_NEW_TOKENS=1024 bash scripts/deepscaler/inference/benchmark_matrix.sh
+```
+
+Default matrix compares `transformers` batching against `vLLM`. Add SGLang if
+it is installed:
+
+```bash
+GPU_ID=0 BENCHMARK_BACKENDS="transformers vllm sglang" \
+BENCHMARK_RUN_NAME=smoke BENCHMARK_MAX_EXAMPLES=32 \
+BENCHMARK_MAX_NEW_TOKENS=1024 bash scripts/deepscaler/inference/benchmark_matrix.sh
+```
+
+Recommended first full-speed candidate:
+
+```bash
+GPU_ID=0 BENCHMARK_BACKEND=vllm BENCHMARK_MAX_EXAMPLES=128 \
+BENCHMARK_MAX_NEW_TOKENS=2048 BENCHMARK_MAX_NUM_SEQS=32 \
+BENCHMARK_RUN_NAME=vllm_probe bash scripts/deepscaler/inference/benchmark.sh
+```
+
+Benchmark outputs:
+
+```text
+outputs/deepscaler/inference_benchmarks/<run>/<backend>/generations.jsonl
+outputs/deepscaler/inference_benchmarks/<run>/<backend>/metrics.json
+outputs/deepscaler/inference_benchmarks/<run>/comparison.md
+```
+
 Full reference-style eval is expensive:
 
 ```bash
