@@ -51,6 +51,11 @@ def test_sympy_expression_equivalence():
     assert AnswerParser().equivalent(r"2\pi", "2*pi")
 
 
+def test_zero_denominator_fraction_is_not_equivalent():
+    assert not AnswerParser().equivalent(r"\frac{1}{0}", "1")
+    assert not AnswerParser().equivalent(r"1\frac{1}{0}", "1")
+
+
 def test_answer_phrase_beats_later_partial_number():
     text = "Simplifying gives -2/3. So the result is -2/3. Rechecking: 1 - 9 = -8"
     assert AnswerParser().extract(text) == "-2/3"

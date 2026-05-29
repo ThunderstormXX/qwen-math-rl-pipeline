@@ -42,9 +42,11 @@ class AnswerNormalizer:
 
     def _mixed_numbers(self, value: str) -> str:
         def replace(match: re.Match) -> str:
+            denominator = float(match.group(3))
+            if denominator == 0:
+                return match.group(0)
             whole = float(match.group(1))
             numerator = float(match.group(2))
-            denominator = float(match.group(3))
             sign = -1.0 if whole < 0 else 1.0
             return str(whole + sign * numerator / denominator)
 
@@ -65,7 +67,10 @@ class AnswerNormalizer:
         try:
             if "/" in value and value.count("/") == 1:
                 numerator, denominator = value.split("/", maxsplit=1)
-                return float(numerator) / float(denominator)
+                denominator_value = float(denominator)
+                if denominator_value == 0:
+                    return None
+                return float(numerator) / denominator_value
             return float(value)
-        except ValueError:
+        except (ValueError, OverflowError):
             return None
